@@ -1,0 +1,217 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+%
+\documentclass[
+  11pt,
+]{article}
+\usepackage{amsmath,amssymb}
+\usepackage{lmodern}
+\usepackage{setspace}
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math}
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{xcolor}
+\usepackage[margin = 1in]{geometry}
+\usepackage{graphicx}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+% Set default figure placement to htbp
+\makeatletter
+\def\fps@figure{htbp}
+\makeatother
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
+\usepackage{amsmath}
+\usepackage{bbm}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{apacite}
+\usepackage{natbib}
+\ifLuaTeX
+  \usepackage{selnolig}  % disable illegal ligatures
+\fi
+\IfFileExists{bookmark.sty}{\usepackage{bookmark}}{\usepackage{hyperref}}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\urlstyle{same} % disable monospaced font for URLs
+\hypersetup{
+  pdfauthor={Seyed Mohammad Mehdi Hassani Najafabadi(Student ID: 400489126)},
+  hidelinks,
+  pdfcreator={LaTeX via pandoc}}
+
+\title{\includegraphics[width=1in,height=\textheight]{Logo.png}
+
+STATS/CSE 780
+
+Assignment3 1}
+\author{Seyed Mohammad Mehdi Hassani Najafabadi(Student ID: 400489126)}
+\date{27 March, 2023}
+
+\begin{document}
+\maketitle
+
+{
+\setcounter{tocdepth}{2}
+\tableofcontents
+}
+\setstretch{1.5}
+\newpage
+
+\hypertarget{introduction}{%
+\section{Introduction}\label{introduction}}
+
+The following
+dataset\href{https://archive.ics.uci.edu/ml/datasets/bank+marketing}{{[}1{]}}
+aims to develop a customer segmentation analysis to define an effective
+marketing strategy for a credit card company. The data set used in this
+analysis summarizes the usage behavior of approximately 9000 active
+credit card holders during the past six months. The dataset is available
+at the customer level and comprises 18 behavioral variables that provide
+valuable insights into customer behavior. The behavioral variables in
+the dataset include factors such as transaction frequency, transaction
+amount, balance, credit limit, and payment amount. Other variables
+include demographic information such as age, gender, and income, as well
+as variables that describe customer behavior, such as tenure, loyalty,
+and credit card type. The customer segmentation analysis will help the
+credit card company divide its customer base into distinct groups with
+similar characteristics, needs, and behaviors. This analysis will
+provide insights into the different groups' preferences, enabling the
+company to develop a targeted marketing strategy that is tailored to
+each group's specific needs.
+
+\hypertarget{data-transformation-and-preprocessing}{%
+\section{Data Transformation and
+Preprocessing}\label{data-transformation-and-preprocessing}}
+
+\hypertarget{handling-missing-values}{%
+\subsection{Handling missing values}\label{handling-missing-values}}
+
+There are 1690 missing values(NA) which will be removed from the data
+set:
+
+\hypertarget{outliers-analysis}{%
+\subsection{Outliers analysis}\label{outliers-analysis}}
+
+According to the box plot in the supplementary document, there are some
+outliers which can be handled by IQR(Inter Quartaile Range) technique:
+
+In order to select important variables,pricipal components analysis is
+used as follows:
+
+\hypertarget{cluster-analysis}{%
+\section{Cluster Analysis}\label{cluster-analysis}}
+
+\hypertarget{k-means-clustering}{%
+\subsection{K-means Clustering}\label{k-means-clustering}}
+
+\hypertarget{determine-the-number-of-clusters}{%
+\subsubsection{Determine the number of
+clusters}\label{determine-the-number-of-clusters}}
+
+In order to use effective clustering, firstly the optimal number of
+clusters has been extracted by using Elbow method width method as
+follows:
+
+\hypertarget{elbow-method}{%
+\subsubsection{Elbow method}\label{elbow-method}}
+
+According to the Elbow and Silhouette the optimal number of clusters is
+K=3.In the following section, k=3 considered as a cluster numbers.
+
+\hypertarget{get-average-silhouette-width}{%
+\subsubsection{Get Average silhouette
+width}\label{get-average-silhouette-width}}
+
+Seems relative good clustering with kmeans.
+
+\hypertarget{hierarchical-clustering}{%
+\subsection{Hierarchical Clustering}\label{hierarchical-clustering}}
+
+In order to use effective Hierarchical Clustering clustering, firstly
+the optimal number of clusters has been extracted by using Elbow method
+width method as follows
+
+\hypertarget{elbow-method-for-hiercahical-clustering}{%
+\subsubsection{Elbow method for hiercahical
+clustering}\label{elbow-method-for-hiercahical-clustering}}
+
+the best cutoff in this clustering is 4.
+
+Again the results of hierarchical is fairly good. clustering with
+
+\hypertarget{pricipal-components-analysis}{%
+\subsection{Pricipal Components
+Analysis}\label{pricipal-components-analysis}}
+
+Firstly the number of principle components are extracted by Elbow
+Methods: As It can be seen two principle components is acceptableness
+for the next combination by other techniques:
+
+\hypertarget{pricipal-components-analysis-and-hierarchical}{%
+\subsection{Pricipal Components analysis and
+Hierarchical}\label{pricipal-components-analysis-and-hierarchical}}
+
+By Combining Principal Components analysis and Hierarchical, silhouette
+score is score remain stable.
+
+\hypertarget{visualize-clustering-results-of-using-pca-and-kmeans}{%
+\section{Visualize Clustering Results of using PCA and
+KMeans}\label{visualize-clustering-results-of-using-pca-and-kmeans}}
+
+After applying PCA, the quality of K-Means has been dramatically
+increased to 0.53 Silhouette average score
+
+\hypertarget{comparison-with-different-clustering-algorithms}{%
+\section{Comparison with different clustering
+algorithms}\label{comparison-with-different-clustering-algorithms}}
+
+Comparison 1 : According to the obtained silhouette average between
+K-means and hierarchical, hierarchical clustering has better results
+(Silhouette average:0.56) than K-Means with (Silhouette average:0.56).
+
+Comparison 2: After applying PCA, the quality of K-Means has been
+dramatically increased to 0.53 Silhouette average score. However,the
+mixture of Hierarchical and PCA performance remains stable.
+
+\newpage
+
+\hypertarget{references}{%
+\section{References}\label{references}}
+
+\href{https://archive.ics.uci.edu/ml/datasets/bank+marketing}{1}.
+\url{https://archive.ics.uci.edu/ml/datasets/bank+marketing}
+
+\end{document}

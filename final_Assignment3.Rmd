@@ -1,0 +1,234 @@
+---
+title: "</p>![](Logo.png){width=1in}</p> \n STATS/CSE 780</p>  \n Assignment3 
+
+  1 \n \n"
+author: 'Seyed Mohammad Mehdi Hassani Najafabadi(Student ID: 400489126)'
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output:
+  pdf_document:
+    toc: yes
+    keep_tex: yes
+  html_document:
+    df_print: paged
+  word_document:
+    toc: yes
+always_allow_html: yes
+header-includes:
+- \usepackage{amsmath}
+- \usepackage{bbm}
+- \usepackage{array}
+- \usepackage{multirow}
+- \usepackage{graphicx}
+- \usepackage{float}
+- \usepackage{apacite}
+- \usepackage{natbib}
+fontsize: 11pt
+geometry: margin = 1in
+linestretch: 1.5
+bibliography: ref.bib
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+```{r,warning=FALSE,include=FALSE}
+# Load the required libraries
+library(dplyr)
+library(magrittr)
+library(readr)
+library(ggplot2)
+library(ISLR2)
+library(factoextra)
+library(pgmm)
+library(cluster)
+library(fossil)
+library(factoextra)
+library(dendextend)
+library(ggdendro)
+library(psych)
+```
+
+\newpage
+
+```{r, warning=FALSE,include=FALSE}
+# Load Bank Marketing Archive dataset
+original_data<- read_csv("CC_GENERAL.csv",show_col_types = FALSE)
+```
+
+```{r,warning=FALSE,include=FALSE}
+# Summary of Data
+dim(original_data)
+names(original_data)
+str(original_data)
+summary(original_data)
+
+```
+# Introduction
+
+The following dataset[[1]][1] aims to develop a customer segmentation analysis to define an effective marketing strategy for a credit card company. The data set used in this analysis summarizes the usage behavior of approximately 9000 active credit card holders during the past six months. The dataset is available at the customer level and comprises 18 behavioral variables that provide valuable insights into customer behavior.
+The behavioral variables in the dataset include factors such as transaction frequency, transaction amount, balance, credit limit, and payment amount. Other variables include demographic information such as age, gender, and income, as well as variables that describe customer behavior, such as tenure, loyalty, and credit card type.
+The customer segmentation analysis will help the credit card company divide its customer base into distinct groups with similar characteristics, needs, and behaviors. This analysis will provide insights into the different groups' preferences, enabling the company to develop a targeted marketing strategy that is tailored to each group's specific needs.
+
+# Data Transformation and Preprocessing
+
+
+
+## Handling missing values
+There are 1690 missing values(NA) which will be removed from the data set:
+```{r, warning=FALSE,include=FALSE}
+
+cat("Number of missing values is",sum(is.na(original_data)),
+ "\n")
+clean_data <- na.omit(original_data)
+# check the missing values
+sum(is.na(clean_data))
+clean_data <-clean_data[,-1]
+```
+## Outliers analysis
+According to the box plot in the supplementary document, there are some outliers which can be handled by IQR(Inter Quartaile Range) technique:
+
+```{r,include=FALSE}
+boxplot(clean_data)
+
+# Extract column names
+c <- colnames(original_data[,-1])
+
+# Define function for calculating IQR and removing outliers
+IQRR <- function(x){
+  Q1 <- quantile(x, 0.25)
+  Q3 <- quantile(x, 0.75)
+  IQR <- Q3 - Q1
+  lower_bound <- Q1 - 1.5 * IQR
+  upper_bound <- Q3 + 1.5* IQR
+  x[x < lower_bound]<- NA
+  x[x > upper_bound] <- NA
+  return(x)
+}
+
+# Apply function to all columns
+iqr_list <- lapply(clean_data[, c], IQRR)
+iqr_df <- as.data.frame(iqr_list)
+clean_data <- na.omit(iqr_df)
+
+
+```
+In order to select important variables,pricipal components analysis is used as follows:  
+
+
+
+
+# Cluster Analysis
+
+## K-means Clustering
+### Determine the number of clusters
+
+In order to use effective clustering, firstly the optimal number of clusters has been extracted by using Elbow method width method  as follows:
+
+### Elbow method
+```{r,warning=FALSE,include=FALSE}
+fviz_nbclust(clean_data,FUNcluster = kmeans, method = "wss") +
+    geom_vline(xintercept = 4, linetype = 2)+
+  labs(subtitle = "Elbow method")
+```
+
+According to the Elbow and Silhouette the optimal number of clusters is K=3.In the following section, k=3 considered as a cluster numbers.
+```{r,warning=FALSE,include=FALSE}
+set.seed(2)
+clustering <- kmeans(clean_data, centers = 4, nstart = 20)
+
+```
+### Get Average silhouette width
+```{r,warning=FALSE,include=FALSE}
+sil <- silhouette(clustering$cluster, dist(clean_data))
+fviz_silhouette(sil)
+
+```
+Seems relative good clustering with kmeans.
+
+## Hierarchical Clustering 
+In order to use effective Hierarchical Clustering clustering, firstly the optimal number of clusters has been extracted by using Elbow method width method  as follows
+
+### Elbow method for hiercahical clustering
+```{r,warning=FALSE,include=FALSE}
+fviz_nbclust(clean_data,FUNcluster = hcut, method = "wss") +
+    geom_vline(xintercept = 4, linetype = 2)+
+  labs(subtitle = "Elbow method")
+```
+the best cutoff in this clustering is 4. 
+
+```{r,warning=FALSE,include=FALSE}
+# Set cluster number
+m <- 4 
+
+# Set cluster name
+c1 <- "cluster1"
+c2 <- "cluster2"
+c3 <- "cluster3"
+c4 <- "cluster4"
+
+# Perform hierarchical clustering
+cluster <- clean_data %>% 
+  dist(method = "euclidean") %>% 
+  hclust(method = "ward.D")
+
+# Plot dendrogram
+ggdendrogram(cluster, rotate = TRUE, theme_dendro = FALSE) + 
+  labs(title = paste0("Hierarchical clustering with ", m, " clusters")) +
+  scale_x_continuous(expand = c(0, 0)) + 
+  theme(panel.grid.minor = element_blank(), 
+        panel.grid.major = element_blank(),
+        axis.text.y = element_blank(),
+        axis.ticks.y = element_blank(),
+        plot.title = element_text(size = 14, face = "bold"),
+        axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5, size = 10))
+
+```
+
+Again the results of hierarchical is fairly good. clustering with 
+
+## Pricipal Components Analysis 
+Firstly the number of principle components are extracted by Elbow Methods:
+As It can be seen two principle components is acceptableness for the next combination by other techniques:
+```{r,warning=FALSE,include=FALSE}
+pca.out <- prcomp(clean_data, scale. = FALSE)
+
+set.seed(123)
+km.out <- kmeans(pca.out$x[,1:2], 2, nstart = 20) 
+km_pca <- km.out
+sil <- silhouette(km_pca$cluster, dist(clean_data))
+fviz_silhouette(sil)
+
+```
+```{r,warning=FALSE,include=FALSE}
+fviz_cluster(km.out, pca.out$x[,1:2])
+
+```
+## Pricipal Components analysis and Hierarchical
+By Combining Principal Components analysis and Hierarchical, silhouette score is score remain stable.
+```{r,warning=FALSE,include=FALSE}
+hc.out <- prcomp(clean_data, scale. = FALSE)
+hc_pca <- hclust(dist(pca.out$x[,1:2]))
+hc_clusters <- cutree(hc_pca, k=2)
+sil <- silhouette(hc_clusters, dist(clean_data))
+fviz_silhouette(sil)
+```
+# Visualize Clustering Results of using PCA and KMeans
+After applying PCA, the quality of  K-Means has been dramatically increased to 0.53 Silhouette average score
+```{r,warning=FALSE,include=FALSE}
+fviz_cluster(list(data = pca.out$x[,1:2], cluster = hc_clusters))
+```
+
+# Comparison with different clustering algorithms
+
+
+Comparison 1 : According to the obtained silhouette average between K-means and hierarchical, hierarchical clustering has better results (Silhouette average:0.56)  than K-Means with (Silhouette average:0.56).
+
+Comparison 2: After applying PCA, the quality of  K-Means has been dramatically increased to 0.53 Silhouette average score. However,the mixture of Hierarchical and PCA performance remains stable.
+
+
+\newpage
+
+# References
+[1]. <https://archive.ics.uci.edu/ml/datasets/bank+marketing>
+
+[1]: <https://archive.ics.uci.edu/ml/datasets/bank+marketing>
