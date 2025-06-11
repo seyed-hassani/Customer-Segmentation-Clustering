@@ -4,28 +4,28 @@ This repository presents a clustering-based customer segmentation analysis aimed
 
 ---
 
-## 📊 Dataset
+##  Dataset
 
 - Source: [UCI Bank Marketing Dataset](https://archive.ics.uci.edu/ml/datasets/bank+marketing)
 - Description: Contains 18 behavioral and demographic variables such as transaction frequency, credit limit, income, and loyalty.
 
 ---
 
-## 🛠️ Methods
+##  Methods
 
-### 🔍 Data Preprocessing
+###  Data Preprocessing
 - **Missing Values**: Removed ~1,690 NA entries.
 - **Outlier Handling**: Handled using IQR (Interquartile Range) method.
 - **Dimensionality Reduction**: Principal Component Analysis (PCA) applied to improve clustering quality.
 
-### 🤖 Clustering Algorithms
+###  Clustering Algorithms
 - **K-Means Clustering**: Optimal number of clusters found using the Elbow and Silhouette methods (K=3).
 - **Hierarchical Clustering**: Dendrogram-based optimal cutoff at 4 clusters.
 - **PCA + Clustering**: Enhanced interpretability and cluster separation using first 2 principal components.
 
 ---
 
-## 📈 Results
+##  Results
 
 | Method                 | Silhouette Score |
 |------------------------|------------------|
@@ -35,7 +35,7 @@ This repository presents a clustering-based customer segmentation analysis aimed
 
 ---
 
-## 📂 File Structure
+##  File Structure
 
 - `Report.pdf`: Full methodology, visualizations, and discussion.
 - `Suplementary.pdf`: Supporting visuals including box plots, elbow plots, and PCA projections.
@@ -43,7 +43,7 @@ This repository presents a clustering-based customer segmentation analysis aimed
 
 ---
 
-## 📎 Author
+##  Author
 
 **Seyed Mohammad Mehdi Hassani Najafabadi**  
 STATS/CSE 780 – McMaster University  
@@ -51,6 +51,6 @@ March 2023
 
 ---
 
-## 📜 License
+##  License
 
 This project is licensed under the MIT License.
